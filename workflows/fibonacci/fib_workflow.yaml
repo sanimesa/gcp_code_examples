@@ -1,0 +1,21 @@
+# calculates and  outputs the Fibonacci series up to n terms 
+main:
+  steps:
+    - init:
+        assign:
+          - n: 10
+          - c: 0
+          - fib_series: [0, 1]
+    - fib:
+        for:
+          value: idx
+          range: ${[0, n - 3]}
+          steps:
+            - generate: 
+                assign:
+                    - a: ${fib_series[idx]}
+                    - b: ${fib_series[idx + 1]}
+                    - c: ${a + b}
+                    - fib_series: ${list.concat(fib_series, c)}
+    - returnOutput:
+        return: ${fib_series}
