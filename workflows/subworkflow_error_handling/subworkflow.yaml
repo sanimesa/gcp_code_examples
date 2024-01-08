@@ -1,0 +1,54 @@
+# This is an example of how to wrap everything in a single try .. catch block
+# since workflows does not support a "catch all" type of construct
+# use a subworkflow and wrap it in a main workflow 
+#
+main:
+    steps:
+        - call_sub:
+            try:
+                call: submain
+                args:
+                    input: {"searchTerm": "Edison, NJ"}
+                result: myresult
+            except:
+                as: e
+                steps:
+                    - handle_error:
+                        call: sys.log
+                        args: 
+                            text: ${"An error has occured " + e.message}
+                        next: end 
+            next: process_result
+        - process_result:
+            call: sys.log
+            args:
+                text: ${myresult}
+
+submain:
+    params: [input]
+    steps:
+    - checkSearchTermInInput:
+        switch:
+            - condition: '${"searchTerm" in input}'
+              assign:
+                - searchTerm: '${input.searchTerm}'
+              next: readWikipedia
+    - getLocation:
+        call: sys.get_env
+        args:
+            name: GOOGLE_CLOUD_LOCATION
+        result: location
+    - setFromCallResult:
+        assign:
+            - searchTerm: '${text.split(location, "-")[0]}'
+    - readWikipedia:
+        call: http.get
+        args:
+            url: 'https://en.wikipedia.or/w/api.php'
+            query:
+                action: opensearch
+                search: '${searchTerm}'
+        result: wikiResult
+    - returnOutput:
+            return: '${wikiResult.body[1]}'
+
