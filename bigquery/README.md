@@ -24,9 +24,9 @@ https://cloud.google.com/bigquery/docs/reference/odbc-jdbc-drivers
 
 The JDBC sample can be run with the following command sets from google cloud shell:
 
-    `   
+       
     curl -o SimbaJDBCDriverforGoogleBigQuery42_1.5.2.1005.zip https://storage.googleapis.com/simba-bq-release/jdbc/SimbaJDBCDriverforGoogleBigQuery42_1.5.2.1005.zip
     
     unzip SimbaJDBCDriverforGoogleBigQuery42_1.5.2.1005.zip -d ./bqjava
     javac WriteToBigQuery.java
-    java -classpath bqjava/*:. WriteToBigQuery`
+    java -classpath bqjava/*:. WriteToBigQuery
