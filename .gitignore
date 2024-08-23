@@ -159,3 +159,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 .vscode/launch.json
+/bigquery/continuous_query/Scripts
+/bigquery/continuous_query/share
+bigquery/continuous_query/pyvenv.cfg
+/bigquery/continuous_query/etc
+bigquery/continuous_query/data_project/.tinyb
