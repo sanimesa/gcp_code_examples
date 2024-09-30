@@ -164,3 +164,8 @@ cython_debug/
 bigquery/continuous_query/pyvenv.cfg
 /bigquery/continuous_query/etc
 bigquery/continuous_query/data_project/.tinyb
+/dataproc/etc
+/dataproc/Scripts
+/dataproc/share
+dataproc/pyvenv.cfg
+dataproc/Include/site/python3.11/greenlet/greenlet.h
