@@ -6,5 +6,5 @@ gcloud functions deploy generic-secret-updater \
   --trigger-http \
   --allow-unauthenticated \
   --entry-point update_gcp_secret \
-  --service-account function-updater@nimesa-data.iam.gserviceaccount.com \
+  --service-account "svc_account" \
   --set-env-vars GOOGLE_CLOUD_PROJECT="nimesa-data",GCP_PROJECT="nimesa-data",WEBHOOK_SECRET="your_strong_webhook_password"
