@@ -1,19 +1,17 @@
 import os
 import json
 import logging
-from google.cloud import secretmanager
 import functions_framework
-
-# Initialize GCP Secret Manager Client
-secret_client = secretmanager.SecretManagerServiceClient()
+from gcp_parameter_manager import ParameterManager
 
 # Configuration from Environment Variables
-PROJECT_ID = os.environ.get("GCP_PROJECT")
 WEBHOOK_SECRET = os.environ.get("WEBHOOK_SECRET")  # Protects this endpoint!
+# Default to GOOGLE_CLOUD_PROJECT (standard for GCP) or fallback to GCP_PROJECT
+PROJECT_ID = os.environ.get("GOOGLE_CLOUD_PROJECT") or os.environ.get("GCP_PROJECT")
 
 @functions_framework.http
 def update_gcp_secret(request):
-    """Generic HTTP Cloud Function to update any secret in GCP Secret Manager."""
+    """Generic HTTP Cloud Function to update any secret using the custom ParameterManager utility."""
     try:
         # 1. Security check: require a custom header
         auth_header = request.headers.get("X-API-Key")
@@ -37,20 +35,20 @@ def update_gcp_secret(request):
         else:
             payload_string = str(secret_value)
 
-        # 3. Add a new version to the Secret Manager
+        # 3. Use the custom ParameterManager to update the secret
         if not PROJECT_ID:
-            return ({"error": "GCP_PROJECT environment variable is missing"}, 500)
+            return ({"error": "GOOGLE_CLOUD_PROJECT environment variable is missing"}, 500)
             
-        parent = f"projects/{PROJECT_ID}/secrets/{secret_id}"
-        
-        response = secret_client.add_secret_version(
-            request={
-                "parent": parent,
-                "payload": {"data": payload_string.encode("UTF-8")},
-            }
+        success = ParameterManager.update_parameter(
+            secret_id=secret_id, 
+            payload=payload_string, 
+            project_id=PROJECT_ID
         )
 
-        return ({"status": "success", "message": f"Secret '{secret_id}' updated. New version: {response.name}"}, 200)
+        if success:
+            return ({"status": "success", "message": f"Secret '{secret_id}' updated successfully."}, 200)
+        else:
+            return ({"error": f"Failed to update secret '{secret_id}'. Check Cloud Function logs."}, 500)
 
     except Exception as e:
         logging.error(f"Function error: {e}")
