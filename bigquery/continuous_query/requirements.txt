@@ -1,0 +1,5 @@
+dash
+pandas
+dash_bootstrap_components
+verdin
+tinybird-cli

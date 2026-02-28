@@ -1,0 +1,12 @@
+SELECT
+    toStartOfMinute(parseDateTimeBestEffort(event_timestamp)) AS minute,
+    instrument_id,
+    temperature,
+    pressure,
+    humidity
+FROM instrument_data_processed_0377
+WHERE parseDateTimeBestEffort(event_timestamp) >= now() - INTERVAL 24 hour
+GROUP BY minute, instrument_id
+
+
+

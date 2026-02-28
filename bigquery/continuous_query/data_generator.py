@@ -19,7 +19,7 @@ table_id = f"{project_id}.{dataset}.instrument_data"  # Replace with your BigQue
 def generate_instrument_data(instrument_id):
     data = {
         "instrument_id": instrument_id,
-        "timestamp": datetime.utcnow().isoformat(),
+        # "timestamp": datetime.utcnow().isoformat(),
     }
     for metric in metrics:
         data[metric] = round(random.uniform(20.0, 100.0), 2)  # Random value between 20 and 100
